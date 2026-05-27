@@ -1,0 +1,79 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://mods-unpacked/Druotic-DPSMeter/ui/hud/dps_overlay.gd" type="Script" id=1]
+[ext_resource path="res://mods-unpacked/Druotic-DPSMeter/ui/hud/pie_chart.gd" type="Script" id=2]
+
+[node name="DpsMeterOverlay" type="Control"]
+margin_right = 240.0
+margin_bottom = 140.0
+mouse_filter = 0
+script = ExtResource( 1 )
+
+[node name="MainHBox" type="HBoxContainer" parent="."]
+margin_right = 240.0
+margin_bottom = 140.0
+
+[node name="PieChart" type="Control" parent="MainHBox"]
+rect_min_size = Vector2( 90, 90 )
+size_flags_horizontal = 0
+script = ExtResource( 2 )
+
+[node name="RightVBox" type="VBoxContainer" parent="MainHBox"]
+margin_left = 8.0
+margin_right = 240.0
+margin_bottom = 140.0
+
+custom_constants/separation = 2
+
+[node name="PlayerRowP1" type="HBoxContainer" parent="MainHBox/RightVBox"]
+
+[node name="PlayerDamageLabelP1" type="RichTextLabel" parent="MainHBox/RightVBox/PlayerRowP1"]
+bbcode_enabled = true
+bbcode_text = ""
+mouse_filter = 0
+fit_content_height = true
+
+[node name="PlayerDpsLabelP1" type="Label" parent="MainHBox/RightVBox/PlayerRowP1"]
+mouse_filter = 0
+align = 2
+text = "0.0"
+
+[node name="PlayerRowP2" type="HBoxContainer" parent="MainHBox/RightVBox"]
+
+[node name="PlayerDamageLabelP2" type="RichTextLabel" parent="MainHBox/RightVBox/PlayerRowP2"]
+bbcode_enabled = true
+bbcode_text = ""
+mouse_filter = 0
+fit_content_height = true
+
+[node name="PlayerDpsLabelP2" type="Label" parent="MainHBox/RightVBox/PlayerRowP2"]
+mouse_filter = 0
+align = 2
+text = "0.0"
+
+[node name="PlayerRowP3" type="HBoxContainer" parent="MainHBox/RightVBox"]
+
+[node name="PlayerDamageLabelP3" type="RichTextLabel" parent="MainHBox/RightVBox/PlayerRowP3"]
+bbcode_enabled = true
+bbcode_text = ""
+mouse_filter = 0
+fit_content_height = true
+
+[node name="PlayerDpsLabelP3" type="Label" parent="MainHBox/RightVBox/PlayerRowP3"]
+mouse_filter = 0
+align = 2
+text = "0.0"
+
+[node name="PlayerRowP4" type="HBoxContainer" parent="MainHBox/RightVBox"]
+
+[node name="PlayerDamageLabelP4" type="RichTextLabel" parent="MainHBox/RightVBox/PlayerRowP4"]
+bbcode_enabled = true
+bbcode_text = ""
+mouse_filter = 0
+fit_content_height = true
+
+[node name="PlayerDpsLabelP4" type="Label" parent="MainHBox/RightVBox/PlayerRowP4"]
+mouse_filter = 0
+align = 2
+text = "0.0"
+

@@ -1,0 +1,31 @@
+{
+  "name": "DPSMeter",
+  "namespace": "Druotic",
+  "version_number": "0.1.0",
+  "description": "Accurate real-time DPS overlay (no overkill; includes charmed enemy damage).",
+  "website_url": "",
+  "dependencies": [],
+  "extra": {
+    "godot": {
+      "optional_dependencies": [
+        "Oudstand-ModOptions"
+      ],
+      "incompatibilities": [],
+      "authors": [
+        "Druotic"
+      ],
+      "tags": [
+        "dps",
+        "damage",
+        "hud",
+        "overlay"
+      ],
+      "compatible_mod_loader_version": [
+        "6.2.0"
+      ],
+      "compatible_game_version": [
+        "1.1.15.0"
+      ]
+    }
+  }
+}

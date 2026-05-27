@@ -1,0 +1,28 @@
+[h1]DPSMeter - Accurate Real-Time DPS Overlay[/h1]
+
+This mod adds a non-intrusive HUD overlay that shows rolling damage and DPS per player during runs.
+
+[h2]What’s accurate here?[/h2]
+
+[list]
+[*]No overkill: the overlay records the `actual_dmg` returned by the enemy/neutral `take_damage()` call (not the requested damage).
+[*]Charmed-enemy damage included: damage dealt by charmed enemies is attributed to the player who charmed them.
+[/list]
+
+[h2]Overlay contents[/h2]
+
+[list]
+[*]Pie chart showing each player’s share of rolling window damage.
+[*]Per-player rows showing rolling window damage and rolling DPS.
+[/list]
+
+[h2]Configuration[/h2]
+
+Optional: if you have [b]Oudstand-ModOptions[/b] installed:
+- Go to `Options → Mods → DPSMeter`
+- Toggle overlay and choose opacity / rolling window size.
+
+[h2]Steam Workshop[/h2]
+
+Install via Workshop (or drop the unpacked mod folder into `mods-unpacked/` following ModLoader best practices).
+
