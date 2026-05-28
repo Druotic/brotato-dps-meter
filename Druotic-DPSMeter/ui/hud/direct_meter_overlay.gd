@@ -22,8 +22,8 @@ func _ready() -> void:
 	anchor_right = 0
 	anchor_top = 1
 	anchor_bottom = 1
-	margin_left = 14
-	margin_right = 390
+	margin_left = 170
+	margin_right = 546
 	margin_top = -150
 	margin_bottom = -10
 	_font = preload("res://resources/fonts/actual/base/font_26_outline.tres")
@@ -43,6 +43,8 @@ func _draw() -> void:
 	var totals = stats["total_damage"]
 	var current_dps = stats["current_dps"]
 	var max_dps = stats["max_dps"]
+	var charm_hits = int(stats["charm_hits"])
+	var damage_mode = str(stats["damage_mode"])
 
 	draw_rect(Rect2(Vector2(0, 0), rect_size), Color(0.0, 0.0, 0.0, 0.55), true)
 
@@ -61,7 +63,7 @@ func _draw() -> void:
 		if float(max_dps[i]) > highest_max:
 			highest_max = float(max_dps[i])
 
-	draw_string(_font, Vector2(10, 24), "Druotic DPSMeter", Color(1.0, 1.0, 1.0, 1.0))
+	draw_string(_font, Vector2(10, 24), "Druotic DPSMeter %s C:%d" % [_mode_label(damage_mode), charm_hits], Color(1.0, 1.0, 1.0, 1.0))
 	_draw_pie(center, radius, totals, player_count)
 
 	for i in range(min(player_count, MAX_PLAYERS)):
@@ -150,3 +152,8 @@ func _format_float(value) -> String:
 	if value >= 1000.0:
 		return "%.1fK" % (value / 1000.0)
 	return "%.1f" % value
+
+func _mode_label(damage_mode) -> String:
+	if damage_mode == "Raw Reported Damage":
+		return "RAW"
+	return "ACT"
