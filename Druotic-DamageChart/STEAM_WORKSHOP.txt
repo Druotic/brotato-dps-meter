@@ -25,3 +25,14 @@ Optional: if you have [b]Oudstand-ModOptions[/b] installed:
 [*]Go to [code]Options -> Mods -> Damage Chart[/code]
 [*]Toggle [b]Hide Damage Chart (Solo)[/b] if you only want the chart in co-op.
 [/list]
+
+[h2]Draws inspiration from[/h2]
+
+[list]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3475164406]RealTimeDamagePerSecondIndicator[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3578347192]Damage Meter[/url]
+[/list]
+
+[h2]Support[/h2]
+
+Bugs or feature requests? See [url=https://github.com/Druotic/brotato-dps-meter]GitHub repository[/url] or comment below
