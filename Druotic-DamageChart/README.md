@@ -1,9 +1,9 @@
-# DPSMeter - Accurate Real-Time DPS Overlay
+# Damage Chart - Real-Time Damage Visualization
 
 This Brotato mod adds a lightweight in-run overlay that displays:
-- Rolling **window damage** (actual HP removed, not requested damage / no overkill)
-- Rolling **DPS** for each player
-- A small pie chart representing each player's share for the current rolling window
+- Total wave damage (actual HP removed, not requested damage / no overkill)
+- Average wave DPS for each player (`damage so far / seconds so far`)
+- A small pie chart representing each player's share of wave damage
 - Damage dealt by **charmed enemies** is attributed to the player who charmed them
 
 ## Accuracy improvements
@@ -16,18 +16,11 @@ Charmed-enemy damage is additionally captured by detecting whether the **attacke
 
 If **Oudstand-ModOptions** is installed, configure via:
 
-`Options → Mods → DPSMeter`
+`Options -> Mods -> Damage Chart`
 
 Options:
-- Enable overlay
-- Opacity
-- Rolling DPS window seconds
-- Show/hide window damage and DPS
+- Hide Damage Chart (Solo)
 
 Without ModOptions, defaults are used:
-- Enabled: `true`
-- Opacity: `1.0`
-- Window seconds: `5.0`
-- Show damage: `true`
-- Show DPS: `true`
+- Chart is visible in solo and co-op.
 

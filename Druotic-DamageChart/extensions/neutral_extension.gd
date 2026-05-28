@@ -3,7 +3,7 @@ extends 'res://entities/units/neutral/neutral.gd'
 # Records actual HP removed from neutral units (props, trees, etc.) so they
 # contribute to per-player damage totals without overkill inflation.
 
-const MOD_MAIN_PATH = "/root/ModLoader/Druotic-DPSMeter"
+const MOD_MAIN_PATH = "/root/ModLoader/Druotic-DamageChart"
 
 func take_damage(value: int, args) -> Array:
 	var result = .take_damage(value, args)

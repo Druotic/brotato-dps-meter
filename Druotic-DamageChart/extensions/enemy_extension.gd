@@ -3,7 +3,7 @@ extends 'res://entities/units/enemies/enemy.gd'
 # Hooks enemy damage so we can record *actual* HP removed.
 # This prevents overkill from inflating DPS.
 
-const MOD_MAIN_PATH = "/root/ModLoader/Druotic-DPSMeter"
+const MOD_MAIN_PATH = "/root/ModLoader/Druotic-DamageChart"
 
 func take_damage(value: int, args) -> Array:
 	var result = .take_damage(value, args)

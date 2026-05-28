@@ -1,8 +1,8 @@
 {
-  "name": "DPSMeter",
+  "name": "DamageChart",
   "namespace": "Druotic",
   "version_number": "0.1.0",
-  "description": "Accurate real-time DPS overlay (no overkill; includes charmed enemy damage).",
+  "description": "Damage Chart: real-time pie and bar damage visualization (no overkill; includes charmed enemy damage).",
   "website_url": "",
   "dependencies": [],
   "extra": {

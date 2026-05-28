@@ -1,6 +1,6 @@
-[h1]DPSMeter - Accurate Real-Time DPS Overlay[/h1]
+[h1]Damage Chart - Real-Time Damage Visualization[/h1]
 
-This mod adds a non-intrusive HUD overlay that shows rolling damage and DPS per player during runs.
+This mod adds a non-intrusive HUD overlay that shows wave damage and average DPS per player during runs.
 
 [h2]What’s accurate here?[/h2]
 
@@ -12,15 +12,15 @@ This mod adds a non-intrusive HUD overlay that shows rolling damage and DPS per 
 [h2]Overlay contents[/h2]
 
 [list]
-[*]Pie chart showing each player’s share of rolling window damage.
-[*]Per-player rows showing rolling window damage and rolling DPS.
+[*]Pie chart showing each player’s share of wave damage.
+[*]Per-player rows showing wave damage and average DPS (`damage so far / seconds so far`).
 [/list]
 
 [h2]Configuration[/h2]
 
 Optional: if you have [b]Oudstand-ModOptions[/b] installed:
-- Go to `Options → Mods → DPSMeter`
-- Toggle overlay and choose opacity / rolling window size.
+- Go to `Options -> Mods -> Damage Chart`
+- Toggle [b]Hide Damage Chart (Solo)[/b] if you only want the chart in co-op.
 
 [h2]Steam Workshop[/h2]
 

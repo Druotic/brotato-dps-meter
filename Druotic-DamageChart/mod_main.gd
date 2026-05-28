@@ -1,27 +1,24 @@
 extends Node
 
-const MOD_ID = "Druotic-DPSMeter"
-const OVERLAY_SCRIPT_PATH = "res://mods-unpacked/Druotic-DPSMeter/ui/hud/direct_meter_overlay.gd"
-const DAMAGE_MODE_ACTUAL = "Actual HP Removed"
-const DAMAGE_MODE_RAW = "Raw Reported Damage"
+const MOD_ID = "Druotic-DamageChart"
+const DISPLAY_NAME = "Damage Chart"
+const MOD_OPTIONS_ID = "DamageChart"
+const OVERLAY_SCRIPT_PATH = "res://mods-unpacked/Druotic-DamageChart/ui/hud/direct_meter_overlay.gd"
+const MIN_DPS_SECONDS = 5.0
 
 var _overlay_layer = null
 var _total_damage = [0, 0, 0, 0]
-var _window_damage = [0, 0, 0, 0]
 var _max_dps = [0.0, 0.0, 0.0, 0.0]
-var _event_times = [[], [], [], []]
-var _event_amounts = [[], [], [], []]
 var _last_wave = -1
 var _has_seen_active_wave = false
-var _window_seconds = 5.0
-var _charm_hits = 0
-var _damage_mode = DAMAGE_MODE_ACTUAL
+var _wave_started_at = 0.0
+var _hide_solo = false
 var _mod_options_attempts = 0
 
 func _init() -> void:
 	ModLoaderLog.info("Init", MOD_ID)
-	ModLoaderMod.install_script_extension("res://mods-unpacked/Druotic-DPSMeter/extensions/enemy_extension.gd")
-	ModLoaderMod.install_script_extension("res://mods-unpacked/Druotic-DPSMeter/extensions/neutral_extension.gd")
+	ModLoaderMod.install_script_extension("res://mods-unpacked/Druotic-DamageChart/extensions/enemy_extension.gd")
+	ModLoaderMod.install_script_extension("res://mods-unpacked/Druotic-DamageChart/extensions/neutral_extension.gd")
 
 func _ready() -> void:
 	call_deferred("_inject_overlay")
@@ -30,55 +27,44 @@ func _ready() -> void:
 func _process(_delta) -> void:
 	if typeof(RunData) != TYPE_NIL:
 		_maybe_reset_for_wave()
-		_prune_window()
 
-func record_damage(player_index, raw_dmg, actual_dmg, attributed_by_charm = false) -> void:
+func record_damage(player_index, _raw_dmg, actual_dmg, _attributed_by_charm = false) -> void:
 	if typeof(RunData) != TYPE_NIL:
 		_maybe_reset_for_wave()
-		_prune_window()
 
 	if player_index < 0 or player_index >= _total_damage.size():
 		return
 
-	var counted_dmg = _get_counted_damage(raw_dmg, actual_dmg)
+	var counted_dmg = int(actual_dmg)
 	if counted_dmg <= 0:
 		return
 
-	if attributed_by_charm:
-		_charm_hits += 1
 	_total_damage[player_index] += counted_dmg
-	_window_damage[player_index] += counted_dmg
-	_event_times[player_index].append(OS.get_ticks_msec() / 1000.0)
-	_event_amounts[player_index].append(counted_dmg)
 
-	var current_dps = float(_window_damage[player_index]) / _window_seconds
+	var current_dps = _get_average_dps(player_index)
 	if current_dps > _max_dps[player_index]:
 		_max_dps[player_index] = current_dps
 
 func get_meter_stats() -> Dictionary:
-	_prune_window()
 	var current_dps = []
 	for i in range(_total_damage.size()):
-		current_dps.append(float(_window_damage[i]) / _window_seconds)
+		current_dps.append(_get_average_dps(i))
 
 	var player_count = 0
+	var wave_in_progress = false
 	if typeof(RunData) != TYPE_NIL:
 		player_count = RunData.get_player_count()
+		wave_in_progress = RunData.wave_in_progress
 
 	return {
 		"player_count": player_count,
+		"wave_in_progress": wave_in_progress,
 		"total_damage": _total_damage.duplicate(),
 		"current_dps": current_dps,
 		"max_dps": _max_dps.duplicate(),
-		"window_seconds": _window_seconds,
-		"charm_hits": _charm_hits,
-		"damage_mode": _damage_mode
+		"hide_solo": _hide_solo,
+		"display_name": DISPLAY_NAME
 	}
-
-func _get_counted_damage(raw_dmg, actual_dmg) -> int:
-	if _damage_mode == DAMAGE_MODE_RAW:
-		return int(raw_dmg)
-	return int(actual_dmg)
 
 func _maybe_reset_for_wave() -> void:
 	var current_wave = int(RunData.current_wave)
@@ -96,19 +82,27 @@ func _maybe_reset_for_wave() -> void:
 func _reset_damage() -> void:
 	for i in range(_total_damage.size()):
 		_total_damage[i] = 0
-		_window_damage[i] = 0
 		_max_dps[i] = 0.0
-		_event_times[i] = []
-		_event_amounts[i] = []
-	_charm_hits = 0
+	_wave_started_at = OS.get_ticks_msec() / 1000.0
 
-func _prune_window() -> void:
-	var cutoff = OS.get_ticks_msec() / 1000.0 - _window_seconds
-	for player_index in range(_event_times.size()):
-		while _event_times[player_index].size() > 0 and float(_event_times[player_index][0]) < cutoff:
-			_window_damage[player_index] -= int(_event_amounts[player_index][0])
-			_event_times[player_index].pop_front()
-			_event_amounts[player_index].pop_front()
+func _get_average_dps(player_index) -> float:
+	if player_index < 0 or player_index >= _total_damage.size():
+		return 0.0
+
+	var elapsed = _get_wave_elapsed_seconds()
+	var denominator = max(elapsed, MIN_DPS_SECONDS)
+	return float(_total_damage[player_index]) / denominator
+
+func _get_wave_elapsed_seconds() -> float:
+	var main = get_tree().get_current_scene()
+	if is_instance_valid(main):
+		var wave_timer = main.get_node_or_null("WaveTimer")
+		if is_instance_valid(wave_timer) and "wait_time" in wave_timer and "time_left" in wave_timer:
+			return max(0.0, float(wave_timer.wait_time) - float(wave_timer.time_left))
+
+	if _wave_started_at <= 0.0:
+		return 0.0
+	return max(0.0, OS.get_ticks_msec() / 1000.0 - _wave_started_at)
 
 func _inject_overlay() -> void:
 	if is_instance_valid(_overlay_layer):
@@ -124,7 +118,7 @@ func _inject_overlay() -> void:
 		return
 
 	var overlay = overlay_script.new()
-	overlay.name = "DruoticDpsMeterOverlay"
+	overlay.name = "DruoticDamageChartOverlay"
 	overlay.set_meter(self)
 
 	_overlay_layer = CanvasLayer.new()
@@ -143,19 +137,18 @@ func _register_mod_options() -> void:
 			ModLoaderLog.debug("ModOptions not found; using default damage mode", MOD_ID)
 		return
 
-	mod_options.register_mod_options("DPSMeter", {
-		"tab_title": "DPS Meter",
+	mod_options.register_mod_options(MOD_OPTIONS_ID, {
+		"tab_title": DISPLAY_NAME,
 		"options": [
 			{
-				"type": "dropdown",
-				"id": "damage_mode",
-				"label": "Damage Accounting",
-				"choices": [DAMAGE_MODE_ACTUAL, DAMAGE_MODE_RAW],
-				"default": DAMAGE_MODE_ACTUAL,
-				"help_text": "Actual HP Removed excludes overkill. Raw Reported Damage matches weapon-reported hit values."
+				"type": "toggle",
+				"id": "hide_solo",
+				"label": "Hide Damage Chart (Solo)",
+				"default": false,
+				"help_text": "Hide the chart when only one player is active."
 			}
 		],
-		"info_text": "Configure how DPSMeter counts damage."
+		"info_text": "Damage Chart always counts actual HP removed, excluding overkill."
 	})
 
 	_apply_mod_options()
@@ -163,21 +156,17 @@ func _register_mod_options() -> void:
 		mod_options.connect("config_changed", self, "_on_mod_options_changed")
 
 func _on_mod_options_changed(mod_id, option_id, _new_value) -> void:
-	if mod_id != "DPSMeter" or option_id != "damage_mode":
+	if mod_id != MOD_OPTIONS_ID:
 		return
-	_apply_mod_options()
-	_reset_damage()
+	if option_id == "hide_solo":
+		_apply_mod_options()
 
 func _apply_mod_options() -> void:
 	var mod_options = _get_mod_options()
 	if not is_instance_valid(mod_options):
 		return
 
-	var value = mod_options.get_value("DPSMeter", "damage_mode")
-	if value == DAMAGE_MODE_RAW:
-		_damage_mode = DAMAGE_MODE_RAW
-	else:
-		_damage_mode = DAMAGE_MODE_ACTUAL
+	_hide_solo = mod_options.get_value(MOD_OPTIONS_ID, "hide_solo") == true
 
 func _get_mod_options():
 	var root = get_tree().get_root()

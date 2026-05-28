@@ -18,12 +18,12 @@ func set_meter(meter) -> void:
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	anchor_left = 0
-	anchor_right = 0
+	anchor_left = 0.5
+	anchor_right = 0.5
 	anchor_top = 1
 	anchor_bottom = 1
-	margin_left = 170
-	margin_right = 546
+	margin_left = -208
+	margin_right = 208
 	margin_top = -150
 	margin_bottom = -10
 	_font = preload("res://resources/fonts/actual/base/font_26_outline.tres")
@@ -39,37 +39,42 @@ func _draw() -> void:
 		return
 
 	var stats = _meter.get_meter_stats()
+	if stats["wave_in_progress"] != true:
+		return
+
 	var player_count = int(stats["player_count"])
+	if stats["hide_solo"] == true and player_count <= 1:
+		return
+
 	var totals = stats["total_damage"]
 	var current_dps = stats["current_dps"]
 	var max_dps = stats["max_dps"]
-	var charm_hits = int(stats["charm_hits"])
-	var damage_mode = str(stats["damage_mode"])
-
-	draw_rect(Rect2(Vector2(0, 0), rect_size), Color(0.0, 0.0, 0.0, 0.55), true)
 
 	var radius = 42.0
 	var center = Vector2(54, rect_size.y - 56)
 	var text_left = 112.0
-	var bar_left = 210.0
 	var bar_width = 96.0
 	var bar_height = 18.0
 	var row_height = 24.0
 	var row_top = 36.0
 	var ascent = _font.get_ascent()
 	var highest_max = 0.0
+	var max_total_text_width = 0.0
 
 	for i in range(min(player_count, MAX_PLAYERS)):
 		if float(max_dps[i]) > highest_max:
 			highest_max = float(max_dps[i])
+		var total_text = "P%d %s" % [i + 1, _format_int(int(totals[i]))]
+		max_total_text_width = max(max_total_text_width, _font.get_string_size(total_text).x)
 
-	draw_string(_font, Vector2(10, 24), "Druotic DPSMeter %s C:%d" % [_mode_label(damage_mode), charm_hits], Color(1.0, 1.0, 1.0, 1.0))
+	var bar_left = max(226.0, text_left + max_total_text_width + 14.0)
+
 	_draw_pie(center, radius, totals, player_count)
 
 	for i in range(min(player_count, MAX_PLAYERS)):
 		var y = row_top + row_height * i
 		var color = _get_player_color(i)
-		var total_text = "[P%d] %s" % [i + 1, _format_int(int(totals[i]))]
+		var total_text = "P%d %s" % [i + 1, _format_int(int(totals[i]))]
 		draw_string(_font, Vector2(text_left, y + ascent), total_text, color)
 
 		var max_value = float(max_dps[i])
@@ -78,13 +83,14 @@ func _draw() -> void:
 		if highest_max > 0.0001:
 			fill_width = bar_width * (max_value / highest_max)
 
-		_draw_bar(Vector2(bar_left, y), fill_width, bar_height, Color(color, _fill_alpha))
+		var bar_y = y + (row_height - bar_height) / 2.0
+		_draw_bar(Vector2(bar_left, bar_y), fill_width, bar_height, Color(color, _fill_alpha))
 		draw_string(_font, Vector2(bar_left + bar_width + 12, y + ascent), _format_float(max_value), color)
 
 		var marker_x = bar_left
 		if max_value > 0.0001:
 			marker_x = bar_left + clamp(current_value / max_value, 0.0, 1.0) * fill_width
-		draw_line(Vector2(marker_x, y), Vector2(marker_x, y + bar_height), color, 4.0)
+		draw_line(Vector2(marker_x, bar_y), Vector2(marker_x, bar_y + bar_height), color, 4.0)
 
 func _get_player_color(player_index):
 	if typeof(CoopService) != TYPE_NIL:
@@ -106,7 +112,7 @@ func _draw_pie(center, radius, totals, player_count) -> void:
 		var value = float(totals[i])
 		if value <= 0.0:
 			continue
-		var next_angle = angle + (value / total) * PI * 2.0
+		var next_angle = angle - (value / total) * PI * 2.0
 		_draw_slice(center, radius, angle, next_angle, Color(_get_player_color(i), _fill_alpha))
 		angle = next_angle
 
@@ -153,7 +159,3 @@ func _format_float(value) -> String:
 		return "%.1fK" % (value / 1000.0)
 	return "%.1f" % value
 
-func _mode_label(damage_mode) -> String:
-	if damage_mode == "Raw Reported Damage":
-		return "RAW"
-	return "ACT"
