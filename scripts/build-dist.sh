@@ -5,7 +5,8 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 MOD_DIR_NAME="Druotic-DamageChart"
 MOD_SOURCE="${ROOT}/${MOD_DIR_NAME}"
 DIST_DIR="${ROOT}/dist"
-ZIP_PATH="${DIST_DIR}/${MOD_DIR_NAME}.zip"
+ZIP_NAME="Damage Chart.zip"
+ZIP_PATH="${DIST_DIR}/${ZIP_NAME}"
 PREVIEW_SOURCE="${ROOT}/assets/workshop_preview.png"
 PREVIEW_PATH="${DIST_DIR}/workshop_preview.png"
 STAGING_DIR="$(mktemp -d)"
@@ -31,7 +32,7 @@ if [[ ! -f "${PREVIEW_SOURCE}" ]]; then
 fi
 
 mkdir -p "${DIST_DIR}"
-rm -f "${ZIP_PATH}"
+rm -f "${ZIP_PATH}" "${DIST_DIR}/Druotic-DamageChart.zip"
 
 mkdir -p "${STAGING_DIR}/mods-unpacked"
 cp -R "${MOD_SOURCE}" "${STAGING_DIR}/mods-unpacked/"

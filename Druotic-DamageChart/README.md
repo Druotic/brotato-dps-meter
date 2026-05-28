@@ -24,3 +24,21 @@ Options:
 Without ModOptions, defaults are used:
 - Chart is visible in solo and co-op.
 
+## Publishing to Steam Workshop
+
+Workshop item: [3734086003](https://steamcommunity.com/sharedfiles/filedetails/?id=3734086003)
+
+From the repository root:
+
+1. Build deploy artifacts:
+   ```bash
+   ./scripts/build-dist.sh
+   ```
+2. In Steam, switch Brotato to the **modding** game version (`Properties -> Betas -> modding`).
+3. Launch Brotato and choose **Launch Game Editor** (Workshop uploader), not the game.
+4. In the uploader, provide:
+   - **Mod ZIP:** `<repo root>/dist/Damage Chart.zip`
+   - **Mod Image:** `<repo root>/dist/workshop_preview.png`
+   - **Workshop ID:** `3734086003` (updates the existing item)
+
+After upload, Steam may take a few seconds to propagate the update to subscribed clients.

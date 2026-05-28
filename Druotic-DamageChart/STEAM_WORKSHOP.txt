@@ -18,11 +18,10 @@ This mod adds a non-intrusive HUD overlay that shows total damage and average/pe
 
 [h2]Configuration[/h2]
 
+To install, just subscribe to this mod and it will be loaded on next game launch.
+
 Optional: if you have [b]Oudstand-ModOptions[/b] installed:
-- Go to `Options -> Mods -> Damage Chart`
-- Toggle [b]Hide Damage Chart (Solo)[/b] if you only want the chart in co-op.
-
-[h2]Steam Workshop[/h2]
-
-Install via Workshop (or drop the unpacked mod folder into `mods-unpacked/` following ModLoader best practices).
-
+[list]
+[*]Go to [code]Options -> Mods -> Damage Chart[/code]
+[*]Toggle [b]Hide Damage Chart (Solo)[/b] if you only want the chart in co-op.
+[/list]
