@@ -7,6 +7,8 @@ This mod adds a non-intrusive HUD overlay that shows total damage and average/pe
 [list]
 [*]No overkill: the overlay records the actual damage dealth, excluding overkill damage.
 [*]Charmed-enemy damage included: damage dealt by charmed enemies is attributed to the player who charmed them.
+[*]End-of-run display: on the death/run-end screen, the chart shows damage from all cleared waves plus your current (failed) wave.
+[*]Retry-friendly: works with Retry Failed Waves and retry mods. Retrying a failed wave doesn’t permanently add that attempt to your run total — only cleared waves are saved.
 [/list]
 
 [h2]Overlay contents[/h2]

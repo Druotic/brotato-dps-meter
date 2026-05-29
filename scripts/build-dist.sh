@@ -5,11 +5,27 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 MOD_DIR_NAME="Druotic-DamageChart"
 MOD_SOURCE="${ROOT}/${MOD_DIR_NAME}"
 DIST_DIR="${ROOT}/dist"
-ZIP_NAME="Damage Chart.zip"
-ZIP_PATH="${DIST_DIR}/${ZIP_NAME}"
+TARGET="${TARGET:-beta}"
 PREVIEW_SOURCE="${ROOT}/assets/workshop_preview.png"
 PREVIEW_PATH="${DIST_DIR}/workshop_preview.png"
 STAGING_DIR="$(mktemp -d)"
+
+case "${TARGET}" in
+  beta)
+    ZIP_NAME="Damage Chart (beta).zip"
+    WORKSHOP_ID="3734746242"
+    ;;
+  prod)
+    ZIP_NAME="Damage Chart.zip"
+    WORKSHOP_ID="3734086003"
+    ;;
+  *)
+    echo "Unknown TARGET: ${TARGET} (expected: beta or prod)" >&2
+    exit 1
+    ;;
+esac
+
+ZIP_PATH="${DIST_DIR}/${ZIP_NAME}"
 
 cleanup() {
   rm -rf "${STAGING_DIR}"
@@ -44,6 +60,8 @@ cp -R "${MOD_SOURCE}" "${STAGING_DIR}/mods-unpacked/"
 
 cp "${PREVIEW_SOURCE}" "${PREVIEW_PATH}"
 
-echo "Built deploy artifacts:"
+echo "Built deploy artifacts (TARGET=${TARGET}):"
 echo "  ${ZIP_PATH}"
 echo "  ${PREVIEW_PATH}"
+echo "  Workshop ID: ${WORKSHOP_ID}"
+echo "  Workshop URL: https://steamcommunity.com/sharedfiles/filedetails/?id=${WORKSHOP_ID}"

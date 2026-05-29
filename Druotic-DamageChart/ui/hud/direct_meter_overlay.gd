@@ -12,6 +12,11 @@ var _colors = [
 ]
 var _outline = Color(0.0, 0.0, 0.0, 0.85)
 var _fill_alpha = 0.35
+const WAVE_MARGIN_TOP = -150
+const WAVE_MARGIN_BOTTOM = -10
+const END_RUN_LIFT = 120
+
+var _layout_uses_run_totals = null
 
 func set_meter(meter) -> void:
 	_meter = meter
@@ -24,13 +29,27 @@ func _ready() -> void:
 	anchor_bottom = 1
 	margin_left = -208
 	margin_right = 208
-	margin_top = -150
-	margin_bottom = -10
+	margin_top = WAVE_MARGIN_TOP
+	margin_bottom = WAVE_MARGIN_BOTTOM
 	_font = preload("res://resources/fonts/actual/base/font_26_outline.tres")
 	set_process(true)
 
 func _process(_delta) -> void:
+	_update_layout()
 	update()
+
+func _update_layout() -> void:
+	if not is_instance_valid(_meter):
+		return
+
+	var use_run_totals = _meter.get_meter_stats()["use_run_totals"] == true
+	if _layout_uses_run_totals != null and use_run_totals == _layout_uses_run_totals:
+		return
+
+	_layout_uses_run_totals = use_run_totals
+	var lift = END_RUN_LIFT if use_run_totals else 0
+	margin_top = WAVE_MARGIN_TOP - lift
+	margin_bottom = WAVE_MARGIN_BOTTOM - lift
 
 func _draw() -> void:
 	if not is_instance_valid(_meter):
@@ -39,10 +58,11 @@ func _draw() -> void:
 		return
 
 	var stats = _meter.get_meter_stats()
-	if stats["wave_in_progress"] != true:
+	if stats["show_overlay"] != true:
 		return
 
 	var player_count = int(stats["player_count"])
+	var use_run_totals = stats["use_run_totals"] == true
 	if stats["hide_solo"] == true and player_count <= 1:
 		return
 
@@ -76,6 +96,9 @@ func _draw() -> void:
 		var color = _get_player_color(i)
 		var total_text = "P%d %s" % [i + 1, _format_int(int(totals[i]))]
 		draw_string(_font, Vector2(text_left, y + ascent), total_text, color)
+
+		if use_run_totals:
+			continue
 
 		var max_value = float(max_dps[i])
 		var current_value = float(current_dps[i])

@@ -12,6 +12,10 @@ Many damage mods rely on “damage dealt” counters that can include overkill (
 
 Charmed-enemy damage is additionally captured by detecting whether the **attacker** is charmed, then attributing damage to the charmer.
 
+## End-of-run totals
+
+On the death/run-end screen, the chart shows cumulative damage from cleared waves plus your current (failed) wave. It works with the base game's **Retry Failed Waves** option — retrying a failed wave doesn't permanently add that attempt to your run total; only cleared waves are saved.
+
 ## Configuration (optional)
 
 If **Oudstand-ModOptions** is installed, configure via:
@@ -26,7 +30,9 @@ Without ModOptions, defaults are used:
 
 ## Publishing to Steam Workshop
 
-Workshop item: [3734086003](https://steamcommunity.com/sharedfiles/filedetails/?id=3734086003)
+Workshop items:
+- Production: [3734086003](https://steamcommunity.com/sharedfiles/filedetails/?id=3734086003)
+- Beta: [3734746242](https://steamcommunity.com/sharedfiles/filedetails/?id=3734746242)
 
 From the repository root:
 
@@ -37,8 +43,8 @@ From the repository root:
 2. In Steam, switch Brotato to the **modding** game version (`Properties -> Betas -> modding`).
 3. Launch Brotato and choose **Launch Game Editor** (Workshop uploader), not the game.
 4. In the uploader, provide:
-   - **Mod ZIP:** `dist/Damage Chart.zip`
+   - **Mod ZIP:** `dist/Damage Chart (beta).zip`
    - **Mod Image:** `dist/workshop_preview.png`
-   - **Workshop ID:** `3734086003` (updates the existing item)
+   - **Workshop ID:** `3734746242` for beta updates, or `3734086003` for production updates
 
 After upload, Steam may take a few seconds to propagate the update to subscribed clients.
