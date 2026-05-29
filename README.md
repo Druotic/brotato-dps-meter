@@ -1,6 +1,6 @@
 # Damage Chart - Real-Time Damage Visualization
 
-This Brotato mod adds a lightweight in-run overlay that displays:
+This [Brotato](https://store.steampowered.com/app/1942280/Brotato/) mod adds a lightweight in-run overlay that displays:
 - Total wave damage (actual HP removed, not requested damage / no overkill)
 - Average wave DPS for each player (`damage so far / seconds so far`)
 - A small pie chart representing each player's share of wave damage
